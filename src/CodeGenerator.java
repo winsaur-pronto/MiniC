@@ -47,6 +47,9 @@ public void encodeFetch(Vname vname, short s){
     }
 }
 private void encodeAssign(Vname vname, short s){
+    emit(Instruction.ST, (byte)0 , (byte)0 , (short)0);
+    emit(Instruction.LD, (byte)0 , (byte)0 , (short)0);
+    /*
     RuntimeEntity entity = (RuntimeEntity) vname.visit(this, s);
     if(entity instanceof KnownValue){
         short v = ((KnownValue) entity).value;
@@ -57,7 +60,18 @@ private void encodeAssign(Vname vname, short s){
                 ((UnknownValue) entity).address :
                 ((KnownAddress) entity).address;
         //emit(Instruction.un1, (byte)0, Instruction.un2, d);
+    }*/
+    /*RuntimeEntity entity = (RuntimeEntity) vname.visit(this, s);
+    if(entity instanceof KnownValue){
+        short v = ((KnownValue) entity).value;
+        //emit(Instruction.un1, (byte)0, (byte)0, v);
     }
+    else{
+        short d = (entity instanceof UnknownValue) ?
+                ((UnknownValue) entity).address :
+                ((KnownAddress) entity).address;
+        //emit(Instruction.un1, (byte)0, Instruction.un2, d);
+    }*/
 }
 
     private static short shortValueOf(Object obj){
@@ -66,17 +80,13 @@ private void encodeAssign(Vname vname, short s){
     @Override
     public Object visitProgram(Program prog, Object arg) {
         short gs = 6;//shortValueOf(arg);
-        
-        
         emit(Instruction.LD, (byte)gs , (byte)0 , (short)0);
         emit(Instruction.ST, (byte)0 , (byte)0 , (short)0);
-        
         //System.out.print("Started Program");
         //System.out.println("---------------");
         prog.S.visit(this, arg);
         //System.out.print("---------------");
         //System.out.println("Finished generated code");
-        
         emit(Instruction.HALT, (byte)0 , (byte)0 , (short)0);
         return null;
     }
@@ -84,10 +94,6 @@ private void encodeAssign(Vname vname, short s){
     @Override
     public Object visitAssignStmt(AssignStmt stmt, Object arg) {
         short gs = shortValueOf(arg);
-        //stmt.E.visit(this, arg);
-        //System.out.print(nextInstrAddr+":");
-        //encodeAssign(stmt.V, gs);
-        //code as specified
         System.out.println(">>visitAssignStmt>>start--");
         //emit(Instruction.LDC, (byte)0, (byte)valuation(integer.spelling), (byte)0 );
         stmt.E.visit(this, arg);
@@ -96,26 +102,12 @@ private void encodeAssign(Vname vname, short s){
         stmt.V.visit(this, arg);
         emit(Instruction.LD, (byte)0 , (byte)0 , (short)0);
         System.out.println(">>visitAssignStmt>>end----");
-        
         return null;
     }
 
     @Override
     public Object visitIfElseStmt(IfElseStmt stmt, Object arg) {
         short gs = shortValueOf(arg);
-        /*stmt.E.visit(this, arg);
-        short i = nextInstrAddr;
-        System.out.print(nextInstrAddr+" visitIfElseStmt: ");
-        emit(Instruction.un1, (byte)0 , Instruction.un2 , (short)0);
-        stmt.S1.visit(this, arg);
-        short j = nextInstrAddr;
-        emit(Instruction.un1, (byte)0 , Instruction.un2 , (short)0);
-        short g = nextInstrAddr;
-        //patch(i,g);
-        stmt.S2.visit(this, arg);
-        short h = nextInstrAddr;
-        //patch(i,nextInstrAddr);
-        //code as specified*/
         System.out.println(">>visitIfElseStmt");
         /*stmt.E.visit(this, arg);
         stmt.S1.visit(this, arg);
@@ -149,43 +141,27 @@ private void encodeAssign(Vname vname, short s){
     @Override
     public Object visitReadStmt(ReadStmt stmt, Object arg) {
         short gs = shortValueOf(arg);
-        //stmt.V.visit(this, arg);
-        //code as specified
-        System.out.println(">>visitReadStmt");
-        //stmt.V.visit(this, arg);
-        System.out.println(">>visitReadStmt--end");
-        
+        //System.out.println(">>visitReadStmt");
+        emit(Instruction.ST, (byte)0 , (byte)0  ,(short)0 );
+        emit(Instruction.IN, (byte)0 , (byte)0  ,(short)0 );
+        //System.out.println(">>visitReadStmt--end");
         return null;
     }
 
     @Override
     public Object visitRepeatStmt(RepeatStmt stmt, Object arg) {
         short gs = shortValueOf(arg);
-        /*short j = nextInstrAddr;
-        emit(Instruction.un1, (byte)0 , Instruction.un2 , (short)0);
-        short g = nextInstrAddr;
-        stmt.S.visit(this, arg);
-        short h = nextInstrAddr;
-        //patch(j,h);
-        stmt.E.visit(this, arg);
-        emit(Instruction.un1, (byte)0 , Instruction.un2 , g);
-        //code as specified*/
         System.out.println(">>visitRepeatStmt>>start----");
         stmt.S.visit(this, arg);
-        System.out.println(">>visitRepeatStmt>>next----");
         stmt.E.visit(this, arg);
+        System.out.println(">>visitRepeatStmt>>next----");
         System.out.println(">>visitRepeatStmt>>end----");
-        
         return null;
     }
 
     @Override
     public Object visitStmtSequence(StmtSequence stmt, Object arg) {
         short gs = shortValueOf(arg);
-        /*
-        stmt.ST1.visit(this, arg);
-        stmt.ST2.visit(this, arg);
-        //code as specified*/
         //System.out.println(">>visitStmtSequence>>start--");
         stmt.ST1.visit(this, arg);
         //System.out.println(">>visitStmtSequence>>next---");
@@ -197,11 +173,9 @@ private void encodeAssign(Vname vname, short s){
     @Override
     public Object visitWriteStmt(WriteStmt stmt, Object arg) {
         short gs = shortValueOf(arg);
-        /*stmt.E.visit(this, arg);
-        //code as specified*/
         System.out.println(">>visitWriteStmt");
-        emit(Instruction.OUT, (byte)0 , (byte)0 , (short)0);
         stmt.E.visit(this, arg);
+        emit(Instruction.OUT, (byte)0 , (byte)0 , (short)0);
         //System.out.println(">>visitWriteStmt>>end");
         return null;
     }
@@ -209,16 +183,16 @@ private void encodeAssign(Vname vname, short s){
     @Override
     public Object visitOperatorExpression(OperatorExpression expr, Object arg) {
         short gs = shortValueOf(arg);
-        /*expr.SE1.visit(this, arg);
-        expr.SE2.visit(this, arg);
-        short p = 0; //address of primitive routin named expr.0
-        emit(Instruction.un1,Instruction.un2,Instruction.un3,p);
-        //code as specified*/
         System.out.println(">>>>visitOperatorExpression");
         emit(Instruction.ST, (byte)0 , (byte)0 , (short)0);
         expr.SE1.visit(this, arg);
         expr.SE2.visit(this, arg);
         emit(Instruction.LD, (byte)0 , (byte)0 , (short)0);
+        emit(Instruction.SUB, (byte)0 , (byte)0 , (short)0);
+        emit(Instruction.JEQ, (byte)0 , (byte)0 , (short)0);
+        emit(Instruction.LDC, (byte)0 , (byte)0 , (short)0);
+        emit(Instruction.LDA, (byte)0 , (byte)0 , (short)0);
+        emit(Instruction.LDC, (byte)0 , (byte)0 , (short)0);
         expr.Op.visit(this, arg);
         System.out.println(">>>>visitOperatorExpression--end");
         
@@ -253,12 +227,7 @@ private void encodeAssign(Vname vname, short s){
     @Override
     public Object visitVname(Vname vname, Object arg) {
         short gs = shortValueOf(arg);
-        /*System.out.print(nextInstrAddr+":");
-        System.out.println("fetch [V]");
-        //encodeAssign(vname);*/        
-        //code as specified
-        System.out.println(">>>>visitVname");
-        //emit(Instruction.OUT, (byte)0, (byte)0 , (byte)0 );
+        //System.out.println(">>>>visitVname");
         vname.I.visit(this, arg);
         return null;
     }
@@ -266,8 +235,7 @@ private void encodeAssign(Vname vname, short s){
     @Override
     public Object visitFactorNum(FactorNum num, Object arg) {
         short gs = shortValueOf(arg);
-        //code as specified
-        //System.out.println(">>>>visitFactorNum");
+        System.out.println(">>>>visitFactorNum");
         num.N.visit(this, arg);
         return null;
     }
@@ -275,12 +243,6 @@ private void encodeAssign(Vname vname, short s){
     @Override
     public Object visitIntegerLiteral(IntegerLiteral integer, Object arg) {
         short gs = shortValueOf(arg);
-        /*Short v = valuation(integer.spelling);
-        System.out.print(nextInstrAddr+":");
-        emit(Instruction.un1, (byte)0, (byte)0, v);
-        System.out.println("LOADL value[IL]");
-        //code as specified*/
-        
         System.out.println(">>>>visitIntegerLiteral");
         emit(Instruction.LDC, (byte)0, (byte)valuation(integer.spelling), (byte)0 );
         return null;
@@ -314,7 +276,7 @@ private void encodeAssign(Vname vname, short s){
         short gs = shortValueOf(arg);
         //code as specified
         System.out.println(">>>>visitOperator");
-        
+        //emit(Instruction.LD, (byte)0, (byte)0 , (byte)0 );
         switch(op.spelling){
             case "+": 
                 emit(Instruction.ADD, (byte)0, (byte)0 , (byte)0 );
@@ -329,12 +291,26 @@ private void encodeAssign(Vname vname, short s){
                 emit(Instruction.DIV, (byte)0, (byte)0 , (byte)0 );
                 break;
             case "=":
+            case "==":    
                 emit(Instruction.JEQ, (byte)0, (byte)0 , (byte)0 );
                 break;    
-            default:  System.out.println(op.spelling);  break;
+            case "<":
+                emit(Instruction.JLT, (byte)0, (byte)0 , (byte)0 );
+                break; 
+            case "<=":
+                emit(Instruction.JLE, (byte)0, (byte)0 , (byte)0 );
+                break; 
+            case ">":
+                emit(Instruction.JGT, (byte)0, (byte)0 , (byte)0 );
+                break;     
+            case ">=":
+                emit(Instruction.JGE, (byte)0, (byte)0 , (byte)0 );
+                break;   
+            case "!=":
+                emit(Instruction.JNE, (byte)0, (byte)0 , (byte)0 );
+                break;         
         }
       
         return null;
     }
-    
 }
