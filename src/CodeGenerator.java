@@ -215,8 +215,10 @@ private void encodeAssign(Vname vname, short s){
         emit(Instruction.un1,Instruction.un2,Instruction.un3,p);
         //code as specified*/
         System.out.println(">>>>visitOperatorExpression");
+        emit(Instruction.ST, (byte)0 , (byte)0 , (short)0);
         expr.SE1.visit(this, arg);
         expr.SE2.visit(this, arg);
+        emit(Instruction.LD, (byte)0 , (byte)0 , (short)0);
         expr.Op.visit(this, arg);
         System.out.println(">>>>visitOperatorExpression--end");
         
