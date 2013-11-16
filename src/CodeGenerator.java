@@ -172,10 +172,9 @@ private void encodeAssign(Vname vname, short s){
         //code as specified*/
         System.out.println(">>visitRepeatStmt>>start----");
         stmt.S.visit(this, arg);
-        System.out.println(">>visitRepeatStmt>>next----");
         stmt.E.visit(this, arg);
+        System.out.println(">>visitRepeatStmt>>next----");
         System.out.println(">>visitRepeatStmt>>end----");
-        
         return null;
     }
 
@@ -200,8 +199,8 @@ private void encodeAssign(Vname vname, short s){
         /*stmt.E.visit(this, arg);
         //code as specified*/
         System.out.println(">>visitWriteStmt");
-        emit(Instruction.OUT, (byte)0 , (byte)0 , (short)0);
         stmt.E.visit(this, arg);
+        emit(Instruction.OUT, (byte)0 , (byte)0 , (short)0);
         //System.out.println(">>visitWriteStmt>>end");
         return null;
     }
@@ -219,6 +218,9 @@ private void encodeAssign(Vname vname, short s){
         expr.SE1.visit(this, arg);
         expr.SE2.visit(this, arg);
         emit(Instruction.LD, (byte)0 , (byte)0 , (short)0);
+        emit(Instruction.LDC, (byte)0 , (byte)0 , (short)0);
+        emit(Instruction.LDA, (byte)0 , (byte)0 , (short)0);
+        emit(Instruction.LDC, (byte)0 , (byte)0 , (short)0);
         expr.Op.visit(this, arg);
         System.out.println(">>>>visitOperatorExpression--end");
         
