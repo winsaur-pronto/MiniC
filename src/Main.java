@@ -20,7 +20,7 @@ public class Main {
             
         }
         else{
-            fName = "ex008.minic";
+            fName = "ex009.minic";
             run();
         }
     }

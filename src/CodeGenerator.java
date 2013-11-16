@@ -74,10 +74,9 @@ private static short shortValueOf(Object obj){
         short gs = shortValueOf(arg);
         
         System.out.println(">>visitIfElseStmt");
-        /*stmt.E.visit(this, arg);
+        stmt.E.visit(this, arg);
         stmt.S1.visit(this, arg);
         stmt.S2.visit(this, arg);
-        */
         System.out.println(">>visitIfElseStmt--end");
         return null;
     }
@@ -99,6 +98,8 @@ private static short shortValueOf(Object obj){
         System.out.println(">>visitIfStmt--next");
         stmt.S1.visit(this, arg);
         short g = nextInstrAddr;
+        emit(Instruction.ST, (byte)0 , (byte)0  ,(short)0 );
+        emit(Instruction.LDA, (byte)0 , (byte)0  ,(short)0 );
         System.out.println(">>visitIfStmt--end");
         patch(i,g);
         return null;
@@ -122,7 +123,7 @@ private static short shortValueOf(Object obj){
         System.out.println(">>>>>>>>>>>>>>>>>>>>visitRepeatStmt>>start----");
         emit(Instruction.ST, (byte)0, (byte)0, (byte)0 );
         stmt.S.visit(this, arg);
-        emit(Instruction.ST, (byte)0, (byte)0 , (byte)0 );
+        //emit(Instruction.ST, (byte)0, (byte)0 , (byte)0 );
         System.out.println(">>>>>>>>>>>>>>>>>>>>visitRepeatStmt>>next----");
         //emit(Instruction.ST, (byte)0, (byte)0, (byte)0 );
         stmt.E.visit(this, arg);
@@ -174,9 +175,11 @@ private static short shortValueOf(Object obj){
     public Object visitOperatorSimpleExpression(OperatorSimpleExpression expr, Object arg) {
         short gs = shortValueOf(arg);
         System.out.println(">>>>visitOperatorSimpleExpression");
-        expr.SE.visit(this, arg);
         //emit(Instruction.ST, (byte)0, (byte)0, (byte)0 );
+        expr.SE.visit(this, arg);
+        emit(Instruction.ST, (byte)0, (byte)0, (byte)0 );
         expr.T.visit(this, arg);
+        //emit(Instruction.ST, (byte)0, (byte)0, (byte)0 );
         expr.Op.visit(this, arg);
         System.out.println(">>>>visitOperatorSimpleExpression--end");
         return null;
@@ -211,7 +214,6 @@ private static short shortValueOf(Object obj){
     @Override
     public Object visitIntegerLiteral(IntegerLiteral integer, Object arg) {
         short gs = shortValueOf(arg);
-        
         System.out.println(">>>>visitIntegerLiteral");
         emit(Instruction.ST, (byte)0, (byte)0, (byte)0 );
         emit(Instruction.LDC, (byte)0, (byte)valuation(integer.spelling), (byte)0 );
@@ -225,8 +227,6 @@ private static short shortValueOf(Object obj){
         term.T.visit(this, arg);
         term.F.visit(this, arg);
         term.Op.visit(this, arg);
-        
-        
         return null;
     }
 
