@@ -1,0 +1,15 @@
+{ Sample program
+in MiniC language -
+if statement }
+
+d:=5; 
+c:=0; 
+repeat
+	if d<3 then 
+		read i; 
+		c:=c+i
+	end; 
+	d:=d-1; 
+	write d
+until d<1; 
+write c

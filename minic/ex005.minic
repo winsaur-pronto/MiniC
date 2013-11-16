@@ -1,0 +1,13 @@
+{ Sample program
+in MiniC language - nested repeat statement
+}
+a:=1; 
+repeat
+	write a; 
+	a:=a+1; 
+	b:=1; 
+	repeat
+		write b;
+		b:=b+1 
+	until b=3
+until a=3

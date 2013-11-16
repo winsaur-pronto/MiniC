@@ -1,0 +1,19 @@
+{ Sample program
+in MiniC language - 
+nested if statement
+}
+
+d:=5;
+c:=0;
+repeat
+	if d < 3 then
+		read i;
+		c:=c+i;
+		if c<100 then
+			write c
+		end
+	end;
+	d:=d-1;
+	write d
+until d <1;
+write c

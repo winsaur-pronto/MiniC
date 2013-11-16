@@ -1,0 +1,17 @@
+{ Sample program
+in MiniC language -
+if-else statement }
+
+d := 10; 
+c:=0; 
+repeat
+	if d < 5 then
+		read i;
+		c := c+i;
+		d := d-2
+	else
+		d := d-1
+	end;
+	write d
+until d < 1;
+write c

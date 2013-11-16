@@ -1,0 +1,5 @@
+{ Sample program
+in MiniC language -
+operator precedence }
+
+write 1+2*3*(7+1)/2-5
